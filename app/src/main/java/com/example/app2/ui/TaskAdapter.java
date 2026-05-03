@@ -29,13 +29,14 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewHolder> {
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        TextView taskText, categoryText;
+        TextView taskText, categoryText, dueDateText;
         CheckBox checkBox;
 
         public ViewHolder(View v) {
             super(v);
             taskText = v.findViewById(R.id.taskText);
             categoryText = v.findViewById(R.id.categoryText);
+            dueDateText = v.findViewById(R.id.dueDateText);
             checkBox = v.findViewById(R.id.checkBox);
         }
     }
@@ -46,6 +47,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewHolder> {
 
         h.taskText.setText(t.getName());
         h.categoryText.setText(t.getCategory());
+        h.dueDateText.setText("Due: " + t.getDueDate());
 
         h.checkBox.setChecked(t.isCompleted() == 1);
 

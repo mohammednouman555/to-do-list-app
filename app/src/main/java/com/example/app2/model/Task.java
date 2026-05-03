@@ -7,12 +7,14 @@ public class Task {
     private String category;
     private int isCompleted;
     private String firebaseId;
+    private String dueDate; // NEW
 
-    public Task(int id, String name, String category, int isCompleted) {
+    public Task(int id, String name, String category, int isCompleted, String dueDate) {
         this.id = id;
         this.name = name;
         this.category = category;
         this.isCompleted = isCompleted;
+        this.dueDate = dueDate;
     }
 
     public int getId() { return id; }
@@ -22,4 +24,6 @@ public class Task {
 
     public String getFirebaseId() { return firebaseId; }
     public void setFirebaseId(String id) { this.firebaseId = id; }
+
+    public String getDueDate() { return dueDate; }
 }

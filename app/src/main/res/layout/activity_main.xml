@@ -1,37 +1,58 @@
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/main"
-    android:orientation="vertical"
-    android:padding="16dp"
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <EditText
-        android:id="@+id/inputText"
-        android:hint="Enter task"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
-
-    <Spinner
-        android:id="@+id/categorySpinner"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
-
-    <Button
-        android:id="@+id/btnAdd"
-        android:text="Add Task"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
-
+    <!-- 🔍 Search -->
     <EditText
         android:id="@+id/searchBox"
         android:hint="Search tasks..."
+        android:padding="12dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
 
+    <!-- 📝 Input -->
+    <EditText
+        android:id="@+id/inputText"
+        android:hint="Enter task"
+        android:layout_below="@id/searchBox"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="12dp"/>
+
+    <!-- 📂 Category -->
+    <Spinner
+        android:id="@+id/categorySpinner"
+        android:layout_below="@id/inputText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+    <!-- 📋 Task List -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerView"
+        android:layout_below="@id/categorySpinner"
+        android:layout_above="@id/logoutBtn"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
 
-</LinearLayout>
+    <!-- 🔓 Logout -->
+    <Button
+        android:id="@+id/logoutBtn"
+        android:text="Logout"
+        android:layout_alignParentBottom="true"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+    <!-- ➕ FAB -->
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fabAdd"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_above="@id/logoutBtn"
+        android:layout_margin="16dp"
+        android:contentDescription="Add Task"
+        app:srcCompat="@android:drawable/ic_input_add"/>
+
+</RelativeLayout>

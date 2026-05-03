@@ -1,26 +1,31 @@
 package com.example.app2.database;
 
 import com.google.firebase.firestore.*;
+import com.google.firebase.auth.FirebaseAuth;
 import java.util.*;
-
 
 public class FirebaseHelper {
 
     FirebaseFirestore db = FirebaseFirestore.getInstance();
 
-    public void addTask(String name, String category) {
+    String getUid() {
+        return FirebaseAuth.getInstance().getCurrentUser().getUid();
+    }
+
+    public void addTask(String name, String category, String dueDate) {
         Map<String, Object> task = new HashMap<>();
         task.put("name", name);
         task.put("category", category);
         task.put("completed", false);
+        task.put("dueDate", dueDate);
 
-        String uid = com.google.firebase.auth.FirebaseAuth.getInstance().getCurrentUser().getUid();
-        db.collection("users").document(uid).collection("tasks").add(task);
+        db.collection("users").document(getUid())
+                .collection("tasks").add(task);
     }
 
     public void listenTasks(OnTasksChanged listener) {
-        String uid = com.google.firebase.auth.FirebaseAuth.getInstance().getCurrentUser().getUid();
-        db.collection("users").document(uid).collection("tasks")
+        db.collection("users").document(getUid())
+                .collection("tasks")
                 .addSnapshotListener((value, error) -> {
 
                     if (error != null || value == null) return;
@@ -40,20 +45,20 @@ public class FirebaseHelper {
     }
 
     public void deleteTask(String id) {
-        String uid = com.google.firebase.auth.FirebaseAuth.getInstance().getCurrentUser().getUid();
-        db.collection("users").document(uid).collection("tasks").document(id).delete();
+        db.collection("users").document(getUid())
+                .collection("tasks").document(id).delete();
     }
 
     public void toggleTask(String id, boolean status) {
-        String uid = com.google.firebase.auth.FirebaseAuth.getInstance().getCurrentUser().getUid();
-        db.collection("users").document(uid).collection("tasks").document(id)
+        db.collection("users").document(getUid())
+                .collection("tasks").document(id)
                 .update("completed", status);
     }
 
-    public void updateTask(String id, String name, String category) {
-        String uid = com.google.firebase.auth.FirebaseAuth.getInstance().getCurrentUser().getUid();
-        db.collection("users").document(uid).collection("tasks").document(id)
-                .update("name", name, "category", category);
+    public void updateTask(String id, String name, String category, String dueDate) {
+        db.collection("users").document(getUid())
+                .collection("tasks").document(id)
+                .update("name", name, "category", category, "dueDate", dueDate);
     }
 
     public interface OnTasksChanged {
