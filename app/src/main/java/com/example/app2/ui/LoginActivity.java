@@ -17,39 +17,73 @@ public class LoginActivity extends AppCompatActivity {
     FirebaseAuth auth;
 
     @Override
-    protected void onCreate(Bundle b) {
-        super.onCreate(b);
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        // ✅ AUTO LOGIN
+        if (FirebaseAuth.getInstance().getCurrentUser() != null) {
+            startActivity(new Intent(this, MainActivity.class));
+            finish();
+        }
+
         setContentView(R.layout.activity_login);
 
-        email = findViewById(R.id.email);
-        password = findViewById(R.id.password);
+        email = findViewById(R.id.emailInput);
+        password = findViewById(R.id.passwordInput);
+
         loginBtn = findViewById(R.id.loginBtn);
         signupBtn = findViewById(R.id.signupBtn);
 
         auth = FirebaseAuth.getInstance();
 
-        loginBtn.setOnClickListener(v -> login());
-        signupBtn.setOnClickListener(v -> signup());
-    }
+        // 🔐 LOGIN
+        loginBtn.setOnClickListener(v -> {
 
-    void login() {
-        auth.signInWithEmailAndPassword(
-                email.getText().toString(),
-                password.getText().toString()
-        ).addOnSuccessListener(a -> {
-            startActivity(new Intent(this, MainActivity.class));
-            finish();
-        }).addOnFailureListener(e ->
-                Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show());
-    }
+            String e = email.getText().toString().trim();
+            String p = password.getText().toString().trim();
 
-    void signup() {
-        auth.createUserWithEmailAndPassword(
-                email.getText().toString(),
-                password.getText().toString()
-        ).addOnSuccessListener(a ->
-                Toast.makeText(this, "Account created", Toast.LENGTH_SHORT).show()
-        ).addOnFailureListener(e ->
-                Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show());
+            auth.signInWithEmailAndPassword(e, p)
+                    .addOnSuccessListener(result -> {
+
+                        Toast.makeText(this,
+                                "Login Successful",
+                                Toast.LENGTH_SHORT).show();
+
+                        startActivity(new Intent(this, MainActivity.class));
+                        finish();
+
+                    })
+                    .addOnFailureListener(err -> {
+
+                        Toast.makeText(this,
+                                err.getMessage(),
+                                Toast.LENGTH_LONG).show();
+                    });
+        });
+
+        // 🆕 SIGNUP
+        signupBtn.setOnClickListener(v -> {
+
+            String e = email.getText().toString().trim();
+            String p = password.getText().toString().trim();
+
+            auth.createUserWithEmailAndPassword(e, p)
+                    .addOnSuccessListener(result -> {
+
+                        Toast.makeText(this,
+                                "Account Created",
+                                Toast.LENGTH_SHORT).show();
+
+                        startActivity(new Intent(this, MainActivity.class));
+                        finish();
+
+                    })
+                    .addOnFailureListener(err -> {
+
+                        Toast.makeText(this,
+                                err.getMessage(),
+                                Toast.LENGTH_LONG).show();
+                    });
+        });
     }
 }

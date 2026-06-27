@@ -1,7 +1,8 @@
 package com.example.app2.database;
 
-import com.google.firebase.firestore.*;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.*;
+
 import java.util.*;
 
 public class FirebaseHelper {
@@ -12,19 +13,33 @@ public class FirebaseHelper {
         return FirebaseAuth.getInstance().getCurrentUser().getUid();
     }
 
-    public void addTask(String name, String category, String dueDate) {
+    public void addTask(
+            String name,
+            String category,
+            String priority,
+            String dueDate,
+            long dueTimestamp
+    ) {
+
         Map<String, Object> task = new HashMap<>();
+
         task.put("name", name);
         task.put("category", category);
+        task.put("priority", priority);
         task.put("completed", false);
         task.put("dueDate", dueDate);
+        task.put("dueTimestamp", dueTimestamp);
 
-        db.collection("users").document(getUid())
-                .collection("tasks").add(task);
+        db.collection("users")
+                .document(getUid())
+                .collection("tasks")
+                .add(task);
     }
 
     public void listenTasks(OnTasksChanged listener) {
-        db.collection("users").document(getUid())
+
+        db.collection("users")
+                .document(getUid())
                 .collection("tasks")
                 .addSnapshotListener((value, error) -> {
 
@@ -33,7 +48,9 @@ public class FirebaseHelper {
                     List<Map<String, Object>> list = new ArrayList<>();
 
                     for (DocumentSnapshot doc : value.getDocuments()) {
+
                         Map<String, Object> map = doc.getData();
+
                         if (map != null) {
                             map.put("id", doc.getId());
                             list.add(map);
@@ -45,20 +62,41 @@ public class FirebaseHelper {
     }
 
     public void deleteTask(String id) {
-        db.collection("users").document(getUid())
-                .collection("tasks").document(id).delete();
+        db.collection("users")
+                .document(getUid())
+                .collection("tasks")
+                .document(id)
+                .delete();
     }
 
     public void toggleTask(String id, boolean status) {
-        db.collection("users").document(getUid())
-                .collection("tasks").document(id)
+        db.collection("users")
+                .document(getUid())
+                .collection("tasks")
+                .document(id)
                 .update("completed", status);
     }
 
-    public void updateTask(String id, String name, String category, String dueDate) {
-        db.collection("users").document(getUid())
-                .collection("tasks").document(id)
-                .update("name", name, "category", category, "dueDate", dueDate);
+    public void updateTask(
+            String id,
+            String name,
+            String category,
+            String priority,
+            String dueDate,
+            long dueTimestamp
+    ) {
+
+        db.collection("users")
+                .document(getUid())
+                .collection("tasks")
+                .document(id)
+                .update(
+                        "name", name,
+                        "category", category,
+                        "priority", priority,
+                        "dueDate", dueDate,
+                        "dueTimestamp", dueTimestamp
+                );
     }
 
     public interface OnTasksChanged {

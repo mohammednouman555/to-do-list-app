@@ -27,6 +27,10 @@
         </activity>
 
 
+        <receiver
+            android:name=".ui.ReminderReceiver"
+            android:exported="true"/>
+
         <!-- 📱 Main App -->
         <activity
             android:name=".ui.MainActivity"

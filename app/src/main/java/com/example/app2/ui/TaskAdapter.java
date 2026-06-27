@@ -1,8 +1,12 @@
 package com.example.app2.ui;
 
+import android.graphics.Color;
 import android.graphics.Paint;
-import android.view.*;
-import android.widget.*;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.CheckBox;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -10,7 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.app2.R;
 import com.example.app2.model.Task;
 
-import java.util.*;
+import java.util.List;
 
 public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewHolder> {
 
@@ -29,43 +33,82 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewHolder> {
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        TextView taskText, categoryText, dueDateText;
+
+        TextView taskText;
+        TextView categoryText;
+        TextView priorityText;
+        TextView dueDateText;
         CheckBox checkBox;
 
         public ViewHolder(View v) {
             super(v);
+
             taskText = v.findViewById(R.id.taskText);
             categoryText = v.findViewById(R.id.categoryText);
+            priorityText = v.findViewById(R.id.priorityText);
             dueDateText = v.findViewById(R.id.dueDateText);
             checkBox = v.findViewById(R.id.checkBox);
         }
     }
 
+    @NonNull
     @Override
-    public void onBindViewHolder(@NonNull ViewHolder h, int i) {
-        Task t = list.get(i);
+    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+
+        return new ViewHolder(
+                LayoutInflater.from(parent.getContext())
+                        .inflate(R.layout.item_task, parent, false)
+        );
+    }
+
+    @Override
+    public void onBindViewHolder(@NonNull ViewHolder h, int position) {
+
+        Task t = list.get(position);
 
         h.taskText.setText(t.getName());
-        h.categoryText.setText(t.getCategory());
-        h.dueDateText.setText("Due: " + t.getDueDate());
+        h.categoryText.setText("Category: " + t.getCategory());
+
+        h.dueDateText.setText("⏰ Due: " + t.getDueDate());
+
+        // TEMPORARY until Task.java gets priority field
+        h.priorityText.setText("Priority: " + t.getPriority());
+
+        if ("High".equals(t.getPriority())) {
+            h.priorityText.setTextColor(Color.RED);
+        }
+        else if ("Medium".equals(t.getPriority())) {
+            h.priorityText.setTextColor(Color.YELLOW);
+        }
+        else {
+            h.priorityText.setTextColor(Color.GREEN);
+        }
 
         h.checkBox.setChecked(t.isCompleted() == 1);
 
         if (t.isCompleted() == 1) {
-            h.taskText.setPaintFlags(h.taskText.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+            h.taskText.setPaintFlags(
+                    h.taskText.getPaintFlags()
+                            | Paint.STRIKE_THRU_TEXT_FLAG
+            );
         } else {
             h.taskText.setPaintFlags(0);
         }
 
         h.checkBox.setOnClickListener(v -> {
             int pos = h.getAdapterPosition();
+
             if (pos != RecyclerView.NO_POSITION) {
-                listener.onToggle(pos, h.checkBox.isChecked() ? 1 : 0);
+                listener.onToggle(
+                        pos,
+                        h.checkBox.isChecked() ? 1 : 0
+                );
             }
         });
 
         h.itemView.setOnClickListener(v -> {
             int pos = h.getAdapterPosition();
+
             if (pos != RecyclerView.NO_POSITION) {
                 listener.onEdit(list.get(pos));
             }
@@ -73,9 +116,11 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewHolder> {
 
         h.itemView.setOnLongClickListener(v -> {
             int pos = h.getAdapterPosition();
+
             if (pos != RecyclerView.NO_POSITION) {
                 listener.onDelete(pos);
             }
+
             return true;
         });
     }
@@ -83,12 +128,5 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewHolder> {
     @Override
     public int getItemCount() {
         return list.size();
-    }
-
-    @NonNull
-    @Override
-    public ViewHolder onCreateViewHolder(@NonNull ViewGroup p, int viewType) {
-        return new ViewHolder(LayoutInflater.from(p.getContext())
-                .inflate(R.layout.item_task, p, false));
     }
 }

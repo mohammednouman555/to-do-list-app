@@ -25,4 +25,5 @@ dependencies {
     implementation("androidx.recyclerview:recyclerview:1.3.2")
     implementation("com.google.firebase:firebase-firestore:24.10.0")
     implementation("com.google.firebase:firebase-auth:22.3.0")
+    implementation("com.itextpdf:itextg:5.5.10")
 }
